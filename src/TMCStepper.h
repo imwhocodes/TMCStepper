@@ -986,7 +986,25 @@ class TMC2208Stepper : public TMCStepper {
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
 		bool CRCerror = false;
-	protected:
+
+		template <typename T, typename TVal = decltype(T::sr) >
+		int writeCheckRegister(T & reg, const TVal val){
+			reg.sr = val;
+			write(reg.address, reg.sr);
+
+			const TVal rval = read(reg.address);
+
+			if(CRCerror){
+				return 0;
+			}
+			if(rval != reg.sr){
+				return -1;
+			}
+
+			return 1;
+		}
+
+	public:
 		INIT2208_REGISTER(GCONF)			{{.sr=0}};
 		INIT_REGISTER(SLAVECONF)			{{.sr=0}};
 		INIT_REGISTER(FACTORY_CONF)		{{.sr=0}};
@@ -1081,7 +1099,7 @@ class TMC2209Stepper : public TMC2208Stepper {
 		uint8_t sedn();
 		bool seimin();
 
-	protected:
+	public:
 		INIT_REGISTER(TCOOLTHRS){.sr=0};
 		TMC2209_n::SGTHRS_t SGTHRS_register{.sr=0};
 		TMC2209_n::COOLCONF_t COOLCONF_register{{.sr=0}};
