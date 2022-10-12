@@ -119,12 +119,13 @@ class TMCStepper {
 		int16_t cur_a();
 		int16_t cur_b();
 
-	protected:
+	public:
 		TMCStepper(float RS) : Rsense(RS) {};
 		INIT_REGISTER(IHOLD_IRUN){{.sr=0}};	// 32b
 		INIT_REGISTER(TPOWERDOWN){.sr=0};		// 8b
 		INIT_REGISTER(TPWMTHRS){.sr=0};			// 32b
 
+	protected:
 		static constexpr uint8_t TMC_READ = 0x00,
 														TMC_WRITE = 0x80;
 
@@ -1012,6 +1013,7 @@ class TMC2208Stepper : public TMCStepper {
 		INIT2208_REGISTER(CHOPCONF)		{{.sr=0}};
 		INIT2208_REGISTER(PWMCONF)		{{.sr=0}};
 
+	protected:
 		struct IFCNT_t 		{ constexpr static uint8_t address = 0x02; };
 		struct OTP_PROG_t 	{ constexpr static uint8_t address = 0x04; };
 		struct OTP_READ_t 	{ constexpr static uint8_t address = 0x05; };
